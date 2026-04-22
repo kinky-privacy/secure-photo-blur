@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#1a1a1a"/>
+  <!-- Eye shape -->
+  <ellipse cx="256" cy="256" rx="200" ry="140" fill="none" stroke="#f0f0f0" stroke-width="18"/>
+  <!-- Pupil -->
+  <circle cx="256" cy="256" r="65" fill="#b22222"/>
+  <circle cx="256" cy="256" r="30" fill="#1a1a1a"/>
+  <!-- Blur bars overlay -->
+  <rect x="56" y="178" width="400" height="24" fill="#1a1a1a" opacity="0.7" rx="4"/>
+  <rect x="56" y="218" width="400" height="24" fill="#1a1a1a" opacity="0.7" rx="4"/>
+  <rect x="56" y="258" width="400" height="24" fill="#1a1a1a" opacity="0.7" rx="4"/>
+  <rect x="56" y="298" width="400" height="24" fill="#1a1a1a" opacity="0.7" rx="4"/>
+  <!-- Highlight lines (mosaic bars visual) -->
+  <rect x="56" y="178" width="400" height="6" fill="#333" rx="2"/>
+  <rect x="56" y="218" width="400" height="6" fill="#333" rx="2"/>
+  <rect x="56" y="258" width="400" height="6" fill="#333" rx="2"/>
+  <rect x="56" y="298" width="400" height="6" fill="#333" rx="2"/>
+</svg>

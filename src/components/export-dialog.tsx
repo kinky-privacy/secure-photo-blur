@@ -2,6 +2,8 @@ import { useState } from 'preact/hooks'
 import type { BlurMethod, ExportFormat } from '../types'
 import { BLUR_SECURITY } from '../types'
 import { SecurityBadge } from './security-badge'
+import { useTranslation } from '../i18n'
+import type { TranslationKey } from '../i18n'
 
 interface Props {
   method: BlurMethod
@@ -10,6 +12,7 @@ interface Props {
 }
 
 export function ExportDialog({ method, onExport, onClose }: Props) {
+  const { t } = useTranslation()
   const format: ExportFormat = 'png'
   const [exporting, setExporting] = useState(false)
   const info = BLUR_SECURITY[method]
@@ -20,7 +23,7 @@ export function ExportDialog({ method, onExport, onClose }: Props) {
       await onExport(format)
       onClose()
     } catch (e) {
-      alert('Export failed: ' + (e instanceof Error ? e.message : String(e)))
+      alert(t('editor.exportFailed', { error: e instanceof Error ? e.message : String(e) }))
     } finally {
       setExporting(false)
     }
@@ -29,12 +32,12 @@ export function ExportDialog({ method, onExport, onClose }: Props) {
   return (
     <div class="overlay" onClick={onClose}>
       <div class="dialog" onClick={(e) => e.stopPropagation()}>
-        <h2>Export photo</h2>
+        <h2>{t('export.title')}</h2>
 
-        {info.warning && (
-          <div class="export-warning">
+        {info.hasWarning && (
+          <div class="body-text export-warning">
             <span>⚠</span>
-            <span>{info.warning}</span>
+            <span>{t(`${info.i18nKey}.warning` as TranslationKey)}</span>
           </div>
         )}
 
@@ -44,17 +47,17 @@ export function ExportDialog({ method, onExport, onClose }: Props) {
 
 
         <ul class="export-reassurance">
-          <li>🛡️ Your original stays safe</li>
-          <li>📁 A new copy is saved with the blur applied</li>
-          <li>📍 All location data removed automatically</li>
+          <li class="body-text">{t('export.originalSafe')}</li>
+          <li class="body-text">{t('export.newCopy')}</li>
+          <li class="body-text">{t('export.locationRemoved')}</li>
         </ul>
 
         <div class="export-actions">
           <button class="btn-ghost" type="button" onClick={onClose} disabled={exporting}>
-            Cancel
+            {t('export.cancel')}
           </button>
           <button class="btn-primary" type="button" onClick={handleExport} disabled={exporting}>
-            {exporting ? 'Exporting…' : 'Download anonymized pic'}
+            {exporting ? t('editor.exporting') : t('editor.downloadAnonymized')}
           </button>
         </div>
 
@@ -67,15 +70,12 @@ export function ExportDialog({ method, onExport, onClose }: Props) {
             border: 1px solid var(--accent);
             border-radius: var(--radius);
             padding: var(--sp-sm) var(--sp-md);
-            font-size: 13px;
-            color: var(--text-secondary);
             margin-bottom: var(--sp-md);
-            line-height: 1.5;
           }
           .export-warning span:first-child {
             color: var(--accent-light);
             flex-shrink: 0;
-            font-size: 15px;
+            font-size: var(--fs-xl);
           }
           .export-method {
             margin-bottom: var(--sp-md);
@@ -94,12 +94,9 @@ export function ExportDialog({ method, onExport, onClose }: Props) {
             gap: 9px;
           }
           .export-reassurance li {
-            font-size: 13px;
-            color: var(--text-secondary);
             display: flex;
             align-items: center;
-            gap: 8px;
-            line-height: 1.4;
+            gap: var(--sp-sm);
           }
         `}</style>
       </div>

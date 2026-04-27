@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks'
 import type { LoadedImage, Rect, RegionShape } from '../types'
+import { useTranslation } from '../i18n'
 
 interface Props {
   kind: 'face' | 'rect'
@@ -250,9 +251,10 @@ export function RegionEditModal({
   const rcy       = sv.y + sv.h / 2
   const hs        = 8
 
-  const color  = kind === 'face' ? '#ff3333' : '#63b3ed'
+  const { t } = useTranslation()
+  const color  = kind === 'face' ? 'var(--color-face)' : 'var(--color-info)'
   const fillRgb = kind === 'face' ? '255,51,51' : '99,179,237'
-  const label  = kind === 'face' ? `Face ${index + 1}` : `Region ${index + 1}`
+  const label  = kind === 'face' ? t('regionEdit.face', { n: index + 1 }) : t('regionEdit.region', { n: index + 1 })
 
   const corners: Array<{ key: Handle; cx: number; cy: number }> = [
     { key: 'nw', cx: sv.x,        cy: sv.y         },
@@ -266,7 +268,7 @@ export function RegionEditModal({
       <div class="rem-modal" onClick={(e: MouseEvent) => e.stopPropagation()}>
         {/* Top bar */}
         <div class="rem-topbar">
-          <button class="rem-close-btn" type="button" onClick={onCancel} title="Close">×</button>
+          <button class="rem-close-btn" type="button" onClick={onCancel} title={t('regionEdit.close')}>×</button>
           <span class="rem-label">{label}</span>
         </div>
 
@@ -275,7 +277,7 @@ export function RegionEditModal({
           <div class="rem-thumb-wrap" style={{ width: modalSize, height: modalSize }}>
             {td.blobUrl
               ? <img class="rem-thumb" src={td.blobUrl} alt={label} width={modalSize} height={modalSize} />
-              : <div class="rem-thumb" style={{ width: modalSize, height: modalSize, background: '#1a1a1a' }} />
+              : <div class="rem-thumb" style={{ width: modalSize, height: modalSize, background: 'var(--bg-base)' }} />
             }
 
             <svg
@@ -365,8 +367,8 @@ export function RegionEditModal({
               {s === 'face' && <IconShapeFace />}
               {s === 'rectangle' && <IconShapeRect />}
               {s === 'oval' && <IconShapeOval />}
-              <span class="rem-shape-label">
-                {s === 'face' ? 'Face' : s === 'rectangle' ? 'Rectangle' : 'Oval'}
+              <span class="body-text body-text--sm body-text--medium rem-shape-label">
+                {s === 'face' ? t('regionEdit.shapeFace') : s === 'rectangle' ? t('regionEdit.shapeRectangle') : t('regionEdit.shapeOval')}
               </span>
             </button>
           ))}
@@ -377,15 +379,15 @@ export function RegionEditModal({
           {visible ? (
             <button class="rem-delete-footer-btn" type="button" onClick={onDelete}>
               <IconTrash />
-              Delete
+              {t('regionEdit.delete')}
             </button>
           ) : (
             <button class="rem-anon-btn" type="button" onClick={onToggle}>
-              Anonymize
+              {t('regionEdit.anonymize')}
             </button>
           )}
           <button class="rem-save-btn" type="button" onClick={onClose}>
-            Save
+            {t('regionEdit.save')}
           </button>
         </div>
       </div>
@@ -433,7 +435,7 @@ export function RegionEditModal({
           color: var(--text-primary);
         }
         .rem-label {
-          font-size: 14px;
+          font-size: var(--fs-lg);
           font-weight: 600;
           color: var(--text-primary);
           font-family: var(--font-sans);
@@ -471,8 +473,6 @@ export function RegionEditModal({
           background: var(--bg-elevated);
         }
         .rem-shape-label {
-          font-size: 11px;
-          font-weight: 500;
           letter-spacing: 0.02em;
         }
         .rem-footer {
@@ -490,7 +490,7 @@ export function RegionEditModal({
           border-radius: var(--radius);
           background: var(--accent);
           color: #fff;
-          font-size: 14px;
+          font-size: var(--fs-lg);
           font-weight: 600;
           font-family: var(--font-sans);
           cursor: pointer;
@@ -504,16 +504,16 @@ export function RegionEditModal({
           padding: 8px 0;
           border: 1px solid var(--border);
           border-radius: var(--radius);
-          background: #dc2626;
+          background: var(--color-error);
           color: #fff;
-          font-size: 13px;
+          font-size: var(--fs-md);
           font-weight: 600;
           font-family: var(--font-sans);
           cursor: pointer;
           transition: background var(--transition);
         }
         .rem-anon-btn:hover {
-          background: #b91c1c;
+          background: var(--color-error-dark);
         }
         .rem-delete-footer-btn {
           flex: 1;
@@ -522,7 +522,7 @@ export function RegionEditModal({
           border-radius: var(--radius);
           background: transparent;
           color: var(--text-secondary);
-          font-size: 13px;
+          font-size: var(--fs-md);
           font-weight: 600;
           font-family: var(--font-sans);
           cursor: pointer;
@@ -551,7 +551,7 @@ export function RegionEditModal({
         }
         .rem-thumb {
           display: block;
-          border-radius: 4px;
+          border-radius: var(--radius);
           pointer-events: none;
           object-fit: cover;
         }

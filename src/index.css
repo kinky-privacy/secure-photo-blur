@@ -15,6 +15,14 @@
   --link: #f0f0f0;
   --link-accent: #cc4444;
 
+  /* Semantic colors */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #dc2626;
+  --color-error-dark: #b91c1c;
+  --color-info: #63b3ed;
+  --color-face: #ff3333;
+
   /* Spacing */
   --sp-xs: 4px;
   --sp-sm: 8px;
@@ -23,9 +31,24 @@
   --sp-xl: 32px;
   --sp-2xl: 48px;
 
+  /* Navbar */
+  --navbar-height: 48px;
+
   /* Border radius */
+  --radius-sm: 3px;
   --radius: 4px;
+  --radius-lg: 6px;
   --radius-pill: 999px;
+
+  /* Font sizes */
+  --fs-xs: 10px;
+  --fs-sm: 11px;
+  --fs-base: 12px;
+  --fs-md: 13px;
+  --fs-lg: 14px;
+  --fs-xl: 15px;
+  --fs-2xl: 16px;
+  --fs-3xl: 18px;
 
   /* Fonts */
   --font-serif: Georgia, "Times New Roman", serif;
@@ -69,6 +92,36 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+/* ── Unified body text ────────────────────────── */
+.body-text {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 1.5;
+  font-size: var(--fs-lg);
+  color: var(--text-secondary);
+}
+
+/* Size */
+.body-text--xs     { font-size: var(--fs-xs); }
+.body-text--sm     { font-size: var(--fs-sm); }
+.body-text--base   { font-size: var(--fs-base); }
+.body-text--md     { font-size: var(--fs-md); }
+.body-text--lg     { font-size: var(--fs-lg); }
+.body-text--xl     { font-size: var(--fs-xl); }
+
+/* Color */
+.body-text--primary { color: var(--text-primary); }
+.body-text--muted   { color: var(--text-muted); }
+.body-text--accent  { color: var(--accent-light); }
+
+/* Weight */
+.body-text--medium  { font-weight: 500; }
+.body-text--semi    { font-weight: 600; }
+
+/* Line-height */
+.body-text--tight   { line-height: 1.35; }
+.body-text--relaxed { line-height: 1.6; }
 
 /* Buttons */
 .btn-primary {
@@ -202,9 +255,7 @@ input[type="range"] {
 }
 
 .dialog p {
-  color: var(--text-secondary);
   margin-bottom: var(--sp-md);
-  line-height: 1.6;
 }
 
 /* Spinner */
@@ -239,3 +290,13 @@ input[type="range"] {
   background: var(--border);
   margin: var(--sp-md) 0;
 }
+
+/* Reposition Tally popup to top-right near the feedback button */
+.tally-popup {
+  top: var(--navbar-height, 48px) !important;
+  right: var(--sp-md) !important;
+  left: auto !important;
+  bottom: auto !important;
+  max-height: calc(100vh - var(--navbar-height, 48px) - var(--sp-md)) !important;
+}
+

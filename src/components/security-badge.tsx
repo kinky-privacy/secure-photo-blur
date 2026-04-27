@@ -1,5 +1,7 @@
 import type { BlurMethod } from '../types'
 import { BLUR_SECURITY } from '../types'
+import { useTranslation } from '../i18n'
+import type { TranslationKey } from '../i18n'
 
 interface Props {
   method: BlurMethod
@@ -7,43 +9,40 @@ interface Props {
 }
 
 const LEVEL_COLOR = {
-  max: '#22c55e',
-  high: '#f59e0b',
-  low: '#b22222',
-}
-
-const LEVEL_LABEL = {
-  max: 'MAX',
-  high: 'HIGH',
-  low: 'LOW',
+  max: 'var(--color-success)',
+  high: 'var(--color-warning)',
+  low: 'var(--accent)',
 }
 
 export function SecurityBadge({ method, compact }: Props) {
+  const { t } = useTranslation()
   const info = BLUR_SECURITY[method]
   const color = LEVEL_COLOR[info.level]
+  const label = t(`${info.i18nKey}.label` as TranslationKey)
+  const warning = info.hasWarning ? t(`${info.i18nKey}.warning` as TranslationKey) : null
 
   return (
     <div class={`security-badge${compact ? ' security-badge--compact' : ''}`}>
       <span class="security-badge-dot" style={{ background: color }} />
-      <span class="security-badge-label">{info.label}</span>
+      <span class="body-text body-text--base security-badge-label">{label}</span>
       {!compact && (
         <span class="security-badge-level" style={{ color }}>
-          {LEVEL_LABEL[info.level]}
+          {t(`security.level.${info.level}` as TranslationKey)}
         </span>
       )}
-      {!compact && info.warning && (
-        <div class="security-badge-warning" title={info.warning}>⚠</div>
+      {!compact && warning && (
+        <div class="security-badge-warning" title={warning}>⚠</div>
       )}
       <style>{`
         .security-badge {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          font-size: 12px;
+          font-size: var(--fs-base);
           color: var(--text-secondary);
         }
         .security-badge--compact {
-          font-size: 11px;
+          font-size: var(--fs-sm);
         }
         .security-badge-dot {
           width: 7px;
@@ -52,17 +51,16 @@ export function SecurityBadge({ method, compact }: Props) {
           flex-shrink: 0;
         }
         .security-badge-label {
-          color: var(--text-secondary);
         }
         .security-badge-level {
           font-weight: 700;
-          font-size: 10px;
+          font-size: var(--fs-xs);
           letter-spacing: 0.06em;
         }
         .security-badge-warning {
           cursor: help;
           color: var(--accent-light);
-          font-size: 13px;
+          font-size: var(--fs-md);
         }
       `}</style>
     </div>

@@ -1,4 +1,6 @@
 import { useRef, useState } from 'preact/hooks'
+import { MosaicBackdrop } from './mosaic-backdrop'
+import { useTranslation } from '../i18n'
 
 const REPO_URL = 'https://github.com/secure-photo-blur/secure-photo-blur'
 
@@ -11,6 +13,7 @@ interface Props {
 const ACCEPTED = '.jpg,.jpeg,.png,.webp,.heic,.heif'
 
 export function Landing({ onFilesSelected, loading, error }: Props) {
+  const { t } = useTranslation()
   const inputRef = useRef<HTMLInputElement>(null)
   const [dragging, setDragging] = useState(false)
 
@@ -40,16 +43,13 @@ export function Landing({ onFilesSelected, loading, error }: Props) {
   }
 
   return (
-    <div class="landing">
+    <div class="landing-wrap">
+      <MosaicBackdrop />
+      <div class="landing">
       <main class="landing-main">
         <h1 class="landing-hero">
-          Secure Photo <em>Blur</em>
+          {t('landing.hero')} <em>{t('landing.heroAccent')}</em>
         </h1>
-        <p class="landing-tagline">
-          Blur faces and sensitive areas — offline, no personal data collected,{' '}
-          <a class="landing-oss-link" href={REPO_URL} target="_blank" rel="noopener noreferrer">open-source</a>.
-        </p>
-
         <div
           class={`drop-zone${dragging ? ' drop-zone--active' : ''}`}
           onDrop={onDrop}
@@ -58,7 +58,7 @@ export function Landing({ onFilesSelected, loading, error }: Props) {
           onClick={() => inputRef.current?.click()}
           role="button"
           tabIndex={0}
-          aria-label="Select or drop a photo"
+          aria-label={t('landing.dropzone.aria')}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault()
@@ -77,7 +77,7 @@ export function Landing({ onFilesSelected, loading, error }: Props) {
           {loading ? (
             <div class="drop-zone-loading">
               <div class="spinner" />
-              <span>Loading image…</span>
+              <span>{t('landing.dropzone.loading')}</span>
             </div>
           ) : (
             <>
@@ -86,79 +86,56 @@ export function Landing({ onFilesSelected, loading, error }: Props) {
                 <polyline points="17 8 12 3 7 8"/>
                 <line x1="12" y1="3" x2="12" y2="15"/>
               </svg>
-              <span class="drop-zone-label">Drop or select photos</span>
+              <span class="body-text drop-zone-label">{t('landing.dropzone.label')}</span>
               <button class="btn-primary" type="button" onClick={(e) => { e.stopPropagation(); inputRef.current?.click() }}>
-                Select Photo
+                {t('landing.dropzone.button')}
               </button>
-              <span class="drop-zone-formats">JPEG · PNG · WebP · HEIC</span>
+              <span class="body-text body-text--base body-text--muted drop-zone-formats">{t('landing.dropzone.formats')}</span>
             </>
           )}
         </div>
 
-        {error && <p class="landing-error">{error}</p>}
+        <p class="body-text body-text--relaxed landing-tagline">
+          {t('landing.tagline.line1')}<br />
+          {t('landing.tagline.line2')}<br />
+          {t('landing.tagline.line3')}<br />
+          {t('landing.tagline.line4')}
+        </p>
 
-        <div class="landing-features">
-          <span class="feature-pill">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
-              <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
-              <line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>
-            </svg>
-            Works offline
-          </span>
-          <span class="feature-pill">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-            No personal data
-          </span>
-          <span class="feature-pill">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-            Metadata stripped
-          </span>
-        </div>
+        {error && <p class="body-text body-text--accent landing-error">{error}</p>}
 
-        <div class="landing-science">
-          <span class="science-heading">Long nerdy details</span>
-          <ul class="science-details">
-            <li>
-              <strong>Face detection</strong> — automatically pre-selects faces as useful starting regions; you can adjust, add, or remove any area before exporting. BlazeFace model via @vladmandic/human, GPU-accelerated (WebGL), self-hosted — no external CDN, no network calls.
-            </li>
-            <li>
-              <strong>Irreversible blur</strong> — Adaptive mosaic reduces faces to ~5×5 effective pixels (min block 12px; below 8px is reversible via super-resolution). Solid fill sets every pixel to R=G=B=0. Gaussian blur is rated LOW: reversible per Revelio (arXiv:2506.12344) and Fantômas (PoPETs 2024).
-            </li>
-            <li>
-              <strong>Network isolation</strong> — Content-Security-Policy blocks all external connections except anonymous page-view analytics (Cloudflare Web Analytics — no cookies, no personal data, no tracking pixels). Your photos never leave your device.
-            </li>
-            <li>
-              <strong>Metadata stripping</strong> — Canvas re-rendering inherently strips all EXIF/GPS data. No metadata survives export.
-            </li>
-            <li>
-              <strong>Open source</strong> — <a class="landing-oss-link" href={REPO_URL} target="_blank" rel="noopener noreferrer">source code on GitHub</a> for everyone to audit.
-            </li>
-          </ul>
-        </div>
+        <p class="body-text body-text--relaxed landing-nerdy-link">
+          {t('landing.nerdy.question')}<br />
+          {t('landing.nerdy.text')}{' '}
+          <a class="landing-oss-link" href={REPO_URL} target="_blank" rel="noopener noreferrer">{t('landing.nerdy.linkText')}</a>.
+        </p>
 
       </main>
+      </div>
 
       <style>{`
+        .landing-wrap {
+          position: relative;
+          height: 100vh;
+          overflow: hidden;
+        }
         .landing {
           display: flex;
           flex-direction: column;
-          height: 100vh;
+          height: 100%;
           overflow-y: auto;
         }
         .landing-main {
+          position: relative;
+          z-index: 1;
           flex: 1;
           display: flex;
           flex-direction: column;
-          align-items: center;
+          align-items: flex-start;
           justify-content: center;
-          padding: var(--sp-xl) var(--sp-md);
+          padding: var(--sp-xl);
           max-width: 600px;
-          margin: 0 auto;
+          margin: 0;
           width: 100%;
           gap: var(--sp-lg);
         }
@@ -166,7 +143,7 @@ export function Landing({ onFilesSelected, loading, error }: Props) {
           font-family: var(--font-serif);
           font-size: clamp(32px, 8vw, 48px);
           font-weight: 700;
-          text-align: center;
+          text-align: left;
           line-height: 1.15;
         }
         .landing-hero em {
@@ -175,14 +152,12 @@ export function Landing({ onFilesSelected, loading, error }: Props) {
           color: var(--accent-light);
         }
         .landing-tagline {
-          text-align: center;
-          color: var(--text-secondary);
-          font-size: var(--fs-xl);
-          line-height: 1.6;
+          text-align: left;
         }
         .drop-zone {
           width: 100%;
           max-width: 480px;
+          align-self: flex-start;
           border: 2px dashed var(--border);
           border-radius: var(--radius);
           padding: var(--sp-xl) var(--sp-lg);
@@ -204,12 +179,8 @@ export function Landing({ onFilesSelected, loading, error }: Props) {
           margin-bottom: var(--sp-xs);
         }
         .drop-zone-label {
-          font-size: var(--fs-xl);
-          color: var(--text-secondary);
         }
         .drop-zone-formats {
-          font-size: var(--fs-base);
-          color: var(--text-muted);
           margin-top: var(--sp-xs);
         }
         .drop-zone-loading {
@@ -220,75 +191,34 @@ export function Landing({ onFilesSelected, loading, error }: Props) {
           color: var(--text-secondary);
         }
         .landing-error {
-          color: var(--accent-light);
-          font-size: var(--fs-md);
-          text-align: center;
+          text-align: left;
         }
-        .landing-features {
-          display: flex;
-          gap: var(--sp-sm);
-          flex-wrap: wrap;
-          justify-content: center;
-        }
-        .feature-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: var(--sp-xs);
-          padding: var(--sp-sm) var(--sp-md);
-          background: var(--bg-surface);
-          border: 1px solid var(--border);
-          border-radius: var(--radius-pill);
-          font-size: var(--fs-base);
-          color: var(--text-secondary);
-        }
-        .feature-pill svg { opacity: 0.7; }
-        .landing-oss-link {
+.landing-oss-link {
           color: var(--link-accent);
           text-decoration: none;
         }
         .landing-oss-link:hover {
           text-decoration: underline;
         }
-        .landing-science {
-          width: 100%;
-          max-width: 480px;
-          background: var(--bg-surface);
-          border: 1px solid var(--border);
-          border-radius: var(--radius);
-          padding: var(--sp-md);
-          display: flex;
-          flex-direction: column;
-          gap: var(--sp-sm);
+        .landing-nerdy-link {
+          margin-top: auto;
+          text-align: left;
+          padding-bottom: var(--sp-md);
         }
-        .science-heading {
-          font-size: var(--fs-xs);
-          font-weight: 700;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          color: var(--text-muted);
-        }
-        .science-details {
-          list-style: none;
-          display: flex;
-          flex-direction: column;
-          gap: var(--sp-sm);
-          padding-top: var(--sp-xs);
-          margin-top: var(--sp-sm);
-        }
-        .science-details li {
-          font-size: var(--fs-base);
-          color: var(--text-muted);
-          line-height: 1.6;
-        }
-        .science-details strong {
-          color: var(--text-secondary);
-        }
-        .science-details code {
-          font-family: monospace;
-          font-size: var(--fs-sm);
-          background: var(--bg-elevated);
-          padding: 1px 4px;
-          border-radius: 2px;
+        @media (min-width: 768px) {
+          .landing-main {
+            align-items: flex-start;
+            justify-content: flex-start;
+            margin: 0;
+            padding-left: 6vw;
+            padding-top: 8vh;
+          }
+          .landing-hero {
+            text-align: left;
+          }
+          .landing-tagline {
+            text-align: left;
+          }
         }
       `}</style>
     </div>

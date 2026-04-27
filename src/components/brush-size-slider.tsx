@@ -1,3 +1,5 @@
+import { useTranslation } from '../i18n'
+
 interface Props {
   value: number
   onChange: (v: number) => void
@@ -6,9 +8,10 @@ interface Props {
 }
 
 export function BrushSizeSlider({ value, onChange, min = 10, max = 120 }: Props) {
+  const { t } = useTranslation()
   return (
     <div class="brush-slider">
-      <span class="brush-slider-label">Size</span>
+      <span class="body-text body-text--base body-text--muted brush-slider-label">{t('brushSize.label')}</span>
       <input
         type="range"
         min={min}
@@ -17,7 +20,7 @@ export function BrushSizeSlider({ value, onChange, min = 10, max = 120 }: Props)
         onInput={(e) => onChange(parseInt((e.target as HTMLInputElement).value))}
         class="brush-slider-input"
       />
-      <span class="brush-slider-value">{value}</span>
+      <span class="body-text body-text--base brush-slider-value">{value}</span>
       <style>{`
         .brush-slider {
           display: flex;
@@ -26,13 +29,9 @@ export function BrushSizeSlider({ value, onChange, min = 10, max = 120 }: Props)
           padding: var(--sp-sm) var(--sp-md);
         }
         .brush-slider-label {
-          font-size: 12px;
-          color: var(--text-muted);
           white-space: nowrap;
         }
         .brush-slider-value {
-          font-size: 12px;
-          color: var(--text-secondary);
           width: 28px;
           text-align: right;
         }

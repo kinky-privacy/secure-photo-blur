@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'preact/hooks'
 import type { BlurMethod, FaceEntry, LoadedImage, Rect, RectEntry } from '../types'
 import { BLUR_SECURITY } from '../types'
+import { useTranslation } from '../i18n'
+import type { TranslationKey } from '../i18n'
 
 interface Props {
   faces: FaceEntry[]
@@ -70,6 +72,7 @@ function rectsFingerprint(rects: Rect[]): string {
 export function FaceList({
   faces, rectEntries, onToggle, onRectToggle, onRectDelete, onOpenModal, detecting, isMobile, image, method, onMethodClick,
 }: Props) {
+  const { t } = useTranslation()
   const faceRects = faces.map(e => e.face.rect)
   const faceFingerprint = rectsFingerprint(faceRects)
   const [faceThumbData, setFaceThumbData] = useState<ThumbData[]>([])
@@ -126,9 +129,9 @@ export function FaceList({
 
   if (detecting) {
     return (
-      <div class="face-list face-list--loading">
+      <div class="face-list body-text body-text--muted face-list--loading">
         <div class="spinner" style={{ width: 16, height: 16 }} />
-        <span>Detecting faces…</span>
+        <span>{t('faceList.detecting')}</span>
         <style>{styles}</style>
       </div>
     )
@@ -139,7 +142,7 @@ export function FaceList({
   return (
     <div class={`face-list${isMobile ? ' face-list--mobile' : ''}`}>
       <div class="face-list-header">
-        <span class="face-list-title">Anonymize areas:</span>
+        <span class="face-list-title">{t('faceList.header')}</span>
         {(() => {
           const info = BLUR_SECURITY[method]
           const isMosaicGreen = method === 'mosaic'
@@ -148,9 +151,9 @@ export function FaceList({
           return (
             <button class="method-trigger-mini" type="button" onClick={onMethodClick}>
               <span class="method-row-dot" style={{ background: dotColor }} />
-              <span class={`method-trigger-mini-name${isMosaicGreen ? ' method-trigger-mini-name--max' : ''}`}>{info.label}</span>
+              <span class={`body-text body-text--medium body-text--primary method-trigger-mini-name${isMosaicGreen ? ' method-trigger-mini-name--max' : ''}`}>{t(`${info.i18nKey}.label` as TranslationKey)}</span>
               <span class={`method-trigger-mini-level ${levelClass}`}>
-                {info.level === 'max' ? 'Very safe' : info.level === 'high' ? 'Safe' : 'Not safe'}
+                {info.level === 'max' ? t('security.verySafe') : info.level === 'high' ? t('security.safe') : t('security.notSafe')}
               </span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 12 15 18 9"/>
@@ -173,12 +176,12 @@ export function FaceList({
                 class="face-item-thumb-wrap"
                 role="button"
                 tabIndex={0}
-                title="Edit region"
+                title={t('faceList.editRegion')}
                 onClick={() => onOpenModal('face', i)}
                 onKeyDown={(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') onOpenModal('face', i) }}
               >
                 {td
-                  ? <img class="face-item-thumb" src={td.blobUrl} alt={`Face ${i + 1}`} />
+                  ? <img class="face-item-thumb" src={td.blobUrl} alt={t('faceList.face', { n: i + 1 })} />
                   : <div class="face-item-thumb" style={{ background: 'var(--bg-base)' }} />
                 }
                 <div class="face-item-edit-hint">
@@ -201,12 +204,12 @@ export function FaceList({
                 class="face-item-thumb-wrap"
                 role="button"
                 tabIndex={0}
-                title="Edit region"
+                title={t('faceList.editRegion')}
                 onClick={() => onOpenModal('rect', i)}
                 onKeyDown={(e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') onOpenModal('rect', i) }}
               >
                 {td
-                  ? <img class="face-item-thumb" src={td.blobUrl} alt={`Region ${i + 1}`} />
+                  ? <img class="face-item-thumb" src={td.blobUrl} alt={t('faceList.region', { n: i + 1 })} />
                   : <div class="face-item-thumb" style={{ background: 'var(--bg-base)' }} />
                 }
                 <div class="face-item-edit-hint">
@@ -215,7 +218,7 @@ export function FaceList({
                 <button
                   class="face-item-delete-btn"
                   type="button"
-                  title="Remove region"
+                  title={t('faceList.removeRegion')}
                   onClick={(e: MouseEvent) => { e.stopPropagation(); onRectDelete?.(i) }}
                 >×</button>
               </div>
@@ -223,13 +226,13 @@ export function FaceList({
           )
         })}
 
-        <div class="face-item-hint-box">
+        <div class="body-text body-text--sm body-text--muted body-text--tight face-item-hint-box">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="18" height="18" rx="2"/>
             <line x1="12" y1="8" x2="12" y2="16"/>
             <line x1="8" y1="12" x2="16" y2="12"/>
           </svg>
-          <span><span class="face-item-hint-box-cta">Click on the photo</span> for a custom area</span>
+          <span><span class="body-text body-text--sm body-text--medium face-item-hint-box-cta">{t('faceList.hintCta')}</span> {t('faceList.hintText')}</span>
         </div>
       </div>
       <style>{styles}</style>
@@ -249,20 +252,22 @@ function IconEdit() {
 const styles = `
   .face-list {
     background: var(--bg-surface);
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
   }
   .face-list--loading {
     display: flex;
     align-items: center;
     gap: var(--sp-sm);
     padding: var(--sp-sm) var(--sp-md);
-    font-size: var(--fs-md);
-    color: var(--text-muted);
     min-height: 44px;
   }
   .face-list-header {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-xs);
     padding: var(--sp-sm) var(--sp-sm) var(--sp-xs);
   }
   .face-list-title {
@@ -289,9 +294,6 @@ const styles = `
     color: var(--text-primary);
   }
   .method-trigger-mini-name {
-    font-size: var(--fs-md);
-    font-weight: 500;
-    color: var(--text-primary);
   }
   .method-trigger-mini-name--max {
     color: var(--color-success);
@@ -323,6 +325,11 @@ const styles = `
     gap: var(--sp-sm);
     padding: var(--sp-xs) var(--sp-sm) var(--sp-md);
     overflow-x: auto;
+  }
+  @media (min-width: 768px) {
+    .face-list-items {
+      flex-wrap: wrap;
+    }
   }
   .face-item {
     flex-shrink: 0;
@@ -444,14 +451,10 @@ const styles = `
     justify-content: center;
     gap: var(--sp-sm);
     padding: var(--sp-sm);
-    color: var(--text-muted);
-    font-size: var(--fs-sm);
-    line-height: 1.35;
     text-align: center;
     pointer-events: none;
   }
   .face-item-hint-box-cta {
     color: rgba(255,255,255,0.85);
-    font-weight: 500;
   }
 `

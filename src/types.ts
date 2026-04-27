@@ -90,38 +90,43 @@ export interface QueueItem {
   error: string | null
 }
 
+export type SecurityLevel = 'max' | 'high' | 'low'
+
 export interface SecurityInfo {
   method: BlurMethod
-  label: string
-  level: 'max' | 'high' | 'low'
-  description: string
-  warning?: string
+  level: SecurityLevel
+  /** i18n key prefix for label/description/warning, e.g. 'method.mosaic' */
+  i18nKey: string
+  hasWarning: boolean
 }
+
+/** Indices at which a new row/group begins (sorted ascending).
+ *  Example: [5, 11] means Row1=images[0..4], Row2=images[5..10], Row3=images[11..N-1] */
+export type RowBreaks = number[]
 
 export const BLUR_SECURITY: Record<BlurMethod, SecurityInfo> = {
   'mosaic': {
     method: 'mosaic',
-    label: 'Mosaic method',
     level: 'high',
-    description: 'Pixelates the area into large blocks. Hard to reverse and suitable for most sensitive content.',
+    i18nKey: 'method.mosaic',
+    hasWarning: false,
   },
   'solid': {
     method: 'solid',
-    label: 'Solid black method',
     level: 'max',
-    description: 'Covers the area with a solid black rectangle. No information can be recovered.',
+    i18nKey: 'method.solid',
+    hasWarning: false,
   },
   'solid-avg': {
     method: 'solid-avg',
-    label: 'Solid average color method',
     level: 'max',
-    description: 'Fills the area with the average color of the region. No structural detail is recoverable.',
+    i18nKey: 'method.solidAvg',
+    hasWarning: false,
   },
   'gaussian': {
     method: 'gaussian',
-    label: 'Gaussian blur method',
     level: 'low',
-    description: 'Applies a soft blur. Can be reversed by AI — use only for non-sensitive content.',
-    warning: 'Research (2025) shows Gaussian blur can be reversed by AI. Use for non-sensitive content only.',
+    i18nKey: 'method.gaussian',
+    hasWarning: true,
   },
 }

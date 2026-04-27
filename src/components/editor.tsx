@@ -10,6 +10,8 @@ import { useCanvasTransform } from '../hooks/use-canvas-transform'
 import { usePointerDraw } from '../hooks/use-pointer-draw'
 import { exportImage } from '../engine/exporter'
 import type { ExportFormat } from '../types'
+import { useTranslation } from '../i18n'
+import type { TranslationKey } from '../i18n'
 
 interface Props {
   image: LoadedImage
@@ -20,6 +22,8 @@ interface Props {
   queuePosition?: { current: number; total: number } | null
   onNavigate?: (direction: 'prev' | 'next') => void
   onExportDone?: () => void
+  onSkipNext?: () => void
+  groupNumber?: number
 }
 
 const METHODS: BlurMethod[] = ['mosaic', 'solid', 'solid-avg', 'gaussian']
@@ -30,7 +34,8 @@ function getSavedMethod(): BlurMethod {
   return (saved && METHODS.includes(saved as BlurMethod)) ? saved as BlurMethod : 'mosaic'
 }
 
-export function Editor({ image, onReset: _onReset, onNewImage, initialEditState, onEditStateChange, queuePosition, onNavigate, onExportDone }: Props) {
+export function Editor({ image, onReset: _onReset, onNewImage, initialEditState, onEditStateChange, queuePosition, onNavigate, onExportDone, onSkipNext, groupNumber }: Props) {
+  const { t } = useTranslation()
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -264,9 +269,9 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
   async function handleExportDownload() {
     setExporting(true)
     try {
-      await exportImage(image, allActions, exportFormat)
+      await exportImage(image, allActions, exportFormat, groupNumber, t('exporter.shareTitle'))
     } catch (e) {
-      alert('Export failed: ' + (e instanceof Error ? e.message : String(e)))
+      alert(t('editor.exportFailed', { error: e instanceof Error ? e.message : String(e) }))
     } finally {
       setExporting(false)
     }
@@ -275,10 +280,10 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
   async function handleExportAndNext() {
     setExporting(true)
     try {
-      await exportImage(image, allActions, exportFormat)
+      await exportImage(image, allActions, exportFormat, groupNumber, t('exporter.shareTitle'))
       onExportDone?.()
     } catch (e) {
-      alert('Export failed: ' + (e instanceof Error ? e.message : String(e)))
+      alert(t('editor.exportFailed', { error: e instanceof Error ? e.message : String(e) }))
     } finally {
       setExporting(false)
     }
@@ -310,39 +315,25 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
       onDrop={onEditorDrop}
     >
       <div class="editor-layout">
-        {/* Navigation bar for multi-image */}
-        {queuePosition && queuePosition.total > 1 && (
-          <div class="editor-nav-bar">
-            <button
-              class="editor-nav-btn"
-              type="button"
-              disabled={queuePosition.current <= 1}
-              onClick={() => onNavigate?.('prev')}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="15 18 9 12 15 6"/>
-              </svg>
-              Prev
-            </button>
-            <span class="editor-nav-counter">
-              Image {queuePosition.current} of {queuePosition.total}
-            </span>
-            <button
-              class="editor-nav-btn"
-              type="button"
-              disabled={queuePosition.current >= queuePosition.total}
-              onClick={() => onNavigate?.('next')}
-            >
-              Next
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"/>
-              </svg>
-            </button>
-          </div>
-        )}
-
         {/* Canvas block */}
         <div class="editor-block editor-block--canvas">
+        {queuePosition && queuePosition.total > 1 && (
+          <div class="editor-canvas-header">
+            <span class="body-text editor-canvas-pos">{t('editor.position', { current: queuePosition.current, total: queuePosition.total })}</span>
+            <div class="editor-canvas-nav">
+              <button class="btn-icon editor-nav-btn" type="button" disabled={queuePosition.current <= 1} onClick={() => onNavigate?.('prev')}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6"/>
+                </svg>
+              </button>
+              <button class="btn-icon editor-nav-btn" type="button" disabled={queuePosition.current >= queuePosition.total} onClick={() => onNavigate?.('next')}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
         <div ref={containerRef} class="editor-canvas-area">
           <CanvasView
             image={image}
@@ -360,7 +351,8 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
         </div>
         </div>
 
-        {/* Anonymize block */}
+        {/* Sidebar: Anonymize + Export */}
+        <div class="editor-sidebar">
         <div class="editor-block">
           <FaceList
             faces={detectedFaces}
@@ -386,45 +378,43 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
             method={method}
             onMethodClick={() => setShowMethodModal(true)}
           />
-        </div>
 
-        {/* Export block */}
-        {(() => {
-          const info = BLUR_SECURITY[method]
-          return (
-            <div class="editor-block">
+          {/* Export section — inside same block */}
+          {(() => {
+            const info = BLUR_SECURITY[method]
+            return (
               <div class="export-panel">
-                {info.warning && (
-                  <div class="export-warning">
+                {info.hasWarning && (
+                  <div class="body-text export-warning">
                     <span>⚠</span>
-                    <span>{info.warning}</span>
+                    <span>{t(`${info.i18nKey}.warning` as TranslationKey)}</span>
                   </div>
                 )}
                 <ul class="export-panel-reassurance">
-                  <li>🛡️ Your original stays safe</li>
-                  <li>📁 A new copy is saved with the blur applied</li>
-                  <li>📍 All location data removed automatically</li>
+                  <li class="body-text body-text--sm body-text--muted body-text--tight">{t('editor.reassurance.original')}</li>
+                  <li class="body-text body-text--sm body-text--muted body-text--tight">{t('editor.reassurance.location')}</li>
                 </ul>
                 <div class="export-panel-actions">
                   {queuePosition && queuePosition.total > 1 && queuePosition.current < queuePosition.total ? (
-                    <>
+                    <div class="export-panel-row">
+                      <button class="btn-ghost export-panel-dl-btn" type="button" onClick={handleExportDownload} disabled={exporting}>
+                        {t('editor.download')}
+                      </button>
                       <button class="btn-primary export-panel-dl-btn" type="button" onClick={handleExportAndNext} disabled={exporting}>
-                        {exporting ? 'Exporting…' : 'Export & Next'}
+                        {exporting ? t('editor.exporting') : t('editor.exportNext')}
                       </button>
-                      <button class="btn-ghost export-panel-skip-btn" type="button" onClick={handleExportDownload} disabled={exporting}>
-                        Download only
-                      </button>
-                    </>
+                    </div>
                   ) : (
                     <button class="btn-primary export-panel-dl-btn" type="button" onClick={handleExportDownload} disabled={exporting}>
-                      {exporting ? 'Exporting…' : 'Download anonymized pic'}
+                      {exporting ? t('editor.exporting') : t('editor.downloadAnonymized')}
                     </button>
                   )}
                 </div>
               </div>
-            </div>
-          )
-        })()}
+            )
+          })()}
+        </div>
+        </div>
       </div>
 
       {/* Drop overlay */}
@@ -435,7 +425,7 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
             <polyline points="17 8 12 3 7 8"/>
             <line x1="12" y1="3" x2="12" y2="15"/>
           </svg>
-          <span>{queuePosition && queuePosition.total > 1 ? 'Drop to add images' : 'Drop to replace image'}</span>
+          <span>{queuePosition && queuePosition.total > 1 ? t('editor.dropAdd') : t('editor.dropReplace')}</span>
         </div>
       )}
 
@@ -443,8 +433,8 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
         <div class="overlay" onClick={() => setShowMethodModal(false)}>
           <div class="method-modal" onClick={(e) => e.stopPropagation()}>
             <div class="method-modal-header">
-              <span class="method-modal-title">Select method</span>
-              <button class="btn-icon info-btn-sm" type="button" title="How blur methods work" onClick={() => { setShowMethodModal(false); setShowInfo(true) }}>
+              <span class="method-modal-title">{t('editor.selectMethod')}</span>
+              <button class="btn-icon info-btn-sm" type="button" title={t('editor.methodInfoTitle')} onClick={() => { setShowMethodModal(false); setShowInfo(true) }}>
                 <IconInfo />
               </button>
             </div>
@@ -462,13 +452,13 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
                     <div class="method-row-top">
                       <div class="method-row-left">
                         <span class="method-row-dot" style={{ background: dotColor }} />
-                        <span class="method-row-name">{info.label}</span>
+                        <span class="method-row-name">{t(`${info.i18nKey}.label` as TranslationKey)}</span>
                       </div>
                       <span class={`method-row-level method-row-level--${info.level}`}>
-                        {info.level === 'max' ? 'Very safe' : info.level === 'high' ? 'Safe' : 'Not safe'}
+                        {info.level === 'max' ? t('security.verySafe') : info.level === 'high' ? t('security.safe') : t('security.notSafe')}
                       </span>
                     </div>
-                    <p class="method-row-desc">{info.description}</p>
+                    <p class="body-text body-text--base body-text--tight method-row-desc">{t(`${info.i18nKey}.description` as TranslationKey)}</p>
                   </button>
                 )
               })}
@@ -531,8 +521,8 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
       <style>{`
         .editor-card-wrapper {
           display: flex;
-          align-items: flex-start;
-          justify-content: center;
+          flex-direction: column;
+          align-items: center;
           min-height: 100%;
           width: 100%;
           padding: var(--sp-lg);
@@ -544,7 +534,34 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
           flex-direction: column;
           gap: var(--sp-md);
           width: 100%;
-          max-width: 1200px;
+        }
+        @media (min-width: 768px) {
+          .editor-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            grid-template-rows: 1fr;
+            height: calc(100vh - var(--navbar-height) - 32px);
+          }
+          .editor-block--canvas {
+            min-height: 0;
+          }
+        }
+        .editor-sidebar {
+          display: flex;
+          flex-direction: column;
+          gap: var(--sp-md);
+        }
+        @media (min-width: 768px) {
+          .editor-sidebar {
+            min-height: 0;
+            height: 100%;
+          }
+          .editor-sidebar > .editor-block {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+          }
         }
         .editor-block {
           background: var(--bg-surface);
@@ -554,6 +571,8 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
         }
         .editor-block--canvas {
           overflow: hidden;
+          display: flex;
+          flex-direction: column;
         }
         .method-row {
           width: 100%;
@@ -616,9 +635,6 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
           color: var(--accent-light);
         }
         .method-row-desc {
-          font-size: var(--fs-base);
-          color: var(--text-secondary);
-          line-height: 1.45;
           margin: 0;
         }
         .info-btn-sm {
@@ -632,6 +648,38 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
         .info-btn-sm:hover {
           opacity: 1;
         }
+        .editor-canvas-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: var(--sp-xs) var(--sp-md);
+          border-bottom: 1px solid var(--border);
+        }
+        .editor-canvas-nav {
+          display: flex;
+          align-items: center;
+          gap: var(--sp-sm);
+        }
+        .editor-canvas-pos {
+          min-width: 60px;
+          text-align: center;
+        }
+        .editor-nav-btn {
+          width: 32px;
+          height: 32px;
+          padding: 0;
+          border-radius: 50%;
+          flex-shrink: 0;
+          color: var(--text-secondary);
+        }
+        .editor-nav-btn:disabled {
+          opacity: 0.25;
+          cursor: default;
+        }
+        .editor-nav-btn:not(:disabled):hover {
+          color: var(--text-primary);
+          background: var(--bg-elevated);
+        }
         .editor-canvas-area {
           display: flex;
           overflow: hidden;
@@ -639,6 +687,12 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
           height: 65vh;
           min-height: 320px;
           background: var(--bg-base);
+        }
+        @media (min-width: 768px) {
+          .editor-canvas-area {
+            height: 100%;
+            min-height: 0;
+          }
         }
         .method-section {
           background: var(--bg-surface);
@@ -720,6 +774,8 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
         }
         .export-panel {
           background: var(--bg-surface);
+          flex-shrink: 0;
+          border-top: 1px solid var(--border);
         }
         .export-panel-actions {
           padding: var(--sp-sm) var(--sp-md) var(--sp-md);
@@ -744,10 +800,7 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
           border: 1px solid var(--accent);
           border-radius: var(--radius);
           padding: var(--sp-sm) var(--sp-md);
-          font-size: var(--fs-md);
-          color: var(--text-secondary);
           margin: 0 var(--sp-md) var(--sp-md);
-          line-height: 1.5;
         }
         .export-warning span:first-child {
           color: var(--accent-light);
@@ -760,62 +813,24 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
           margin: 0;
           display: flex;
           flex-direction: column;
-          gap: 9px;
+          gap: 4px;
         }
         .export-panel-reassurance li {
-          font-size: var(--fs-md);
-          color: var(--text-secondary);
           display: flex;
           align-items: center;
+          gap: var(--sp-xs);
+        }
+        .export-panel-row {
+          display: flex;
           gap: var(--sp-sm);
-          line-height: 1.4;
+        }
+        .export-panel-row .export-panel-dl-btn {
+          flex: 1;
         }
         .export-panel-actions .export-panel-dl-btn {
           width: 100%;
           padding: 10px 0;
           font-size: var(--fs-lg);
-        }
-        .editor-nav-bar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: var(--sp-sm) var(--sp-md);
-          background: var(--bg-surface);
-          border: 1px solid var(--border);
-          border-radius: var(--radius);
-        }
-        .editor-nav-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: var(--sp-xs);
-          background: var(--bg-elevated);
-          border: 1px solid var(--border);
-          border-radius: var(--radius);
-          padding: var(--sp-xs) var(--sp-sm);
-          cursor: pointer;
-          font-family: var(--font-sans);
-          font-size: var(--fs-md);
-          color: var(--text-secondary);
-          transition: border-color var(--transition), color var(--transition);
-        }
-        .editor-nav-btn:hover:not(:disabled) {
-          border-color: #555;
-          color: var(--text-primary);
-        }
-        .editor-nav-btn:disabled {
-          opacity: 0.35;
-          cursor: default;
-        }
-        .editor-nav-counter {
-          font-size: var(--fs-md);
-          color: var(--text-secondary);
-          font-weight: 500;
-        }
-        .export-panel-skip-btn {
-          width: 100%;
-          padding: 8px 0;
-          font-size: var(--fs-md);
-          margin-top: var(--sp-xs);
         }
         .editor-drop-overlay {
           position: absolute;

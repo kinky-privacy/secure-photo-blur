@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval' https://static.cloudflareinsights.com; img-src 'self' blob: data:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; object-src 'none'; connect-src 'self' blob: data: https://cloudflareinsights.com;" />
+      content="default-src 'self'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://tally.so; img-src 'self' blob: data:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src https://tally.so; object-src 'none'; connect-src 'self' blob: data: https://cloudflareinsights.com https://tally.so;" />
     <meta name="referrer" content="no-referrer" />
     <meta name="description" content="Privacy-first photo anonymization — offline, open-source, no personal data collected" />
     <meta name="theme-color" content="#1a1a1a" />
@@ -19,6 +19,7 @@
     <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <title>Secure Photo Blur</title>
+    <script async src="https://tally.so/widgets/embed.js"></script>
   </head>
   <body>
     <div id="app"></div>

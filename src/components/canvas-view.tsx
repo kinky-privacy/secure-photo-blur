@@ -72,7 +72,7 @@ export function CanvasView(props: Props) {
           flex: 1;
           position: relative;
           overflow: hidden;
-          background: #111;
+          background: var(--bg-base);
           touch-action: none;
         }
         .canvas-main {

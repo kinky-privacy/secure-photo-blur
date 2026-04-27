@@ -22,6 +22,17 @@ Estratto da ispezione visiva delle pagine: Home, Esplora, Gruppi, Eventi.
 | `link`          | `#f0f0f0`       | Link (bianco/near-white, underline on hover)  |
 | `link-accent`   | `#cc4444`       | Link in evidenza (titoli post/evento)         |
 
+### Colori semantici
+
+| Token              | Valore hex      | Utilizzo                                      |
+|--------------------|-----------------|-----------------------------------------------|
+| `color-success`    | `#22c55e`       | Stato sicuro (security level max, badge verdi) |
+| `color-warning`    | `#f59e0b`       | Stato attenzione (security level high, ambra)  |
+| `color-error`      | `#dc2626`       | Azione distruttiva (delete, anonymize button)  |
+| `color-error-dark` | `#b91c1c`       | Hover su bottoni error                         |
+| `color-info`       | `#63b3ed`       | Regioni custom, bordi informativi (blu)        |
+| `color-face`       | `#ff3333`       | Colore regioni viso in SVG overlay             |
+
 ---
 
 ## 2. Tipografia
@@ -43,6 +54,19 @@ Estratto da ispezione visiva delle pagine: Home, Esplora, Gruppi, Eventi.
 | Metadata / timestamp| Sans    | 12px  | 400    | normale |
 | Label categoria     | Sans    | 11px  | 500    | uppercase |
 | Counter badge       | Sans    | 11px  | 700    | normale |
+
+### Variabili font-size (CSS custom properties)
+
+| Token      | Valore | Utilizzo                                  |
+|------------|--------|-------------------------------------------|
+| `--fs-xs`  | `10px` | Label categoria, level badge              |
+| `--fs-sm`  | `11px` | Badge compact, counter, shape label       |
+| `--fs-base`| `12px` | Metadata, timestamp, details tecnici      |
+| `--fs-md`  | `13px` | Testo warning, loading, reassurance       |
+| `--fs-lg`  | `14px` | Body text, titoli card, label regioni     |
+| `--fs-xl`  | `15px` | Tagline, label drop-zone, icona warning   |
+| `--fs-2xl` | `16px` | Titoli modali, drop overlay               |
+| `--fs-3xl` | `18px` | Titoli sezione                            |
 
 ---
 
@@ -190,7 +214,9 @@ focus: border-color #b22222, outline none
 
 ## 7. Bordi & Ombre
 
-- `border-radius` generico: `4px`
+- `border-radius` sm: `3px` (`--radius-sm`) — slider track, bottoni piccoli
+- `border-radius` generico: `4px` (`--radius`)
+- `border-radius` lg: `6px` (`--radius-lg`) — thumbnail, hint box
 - `border-radius` avatar/immagini: `50%`
 - `border-radius` pill (badge): `999px`
 - Ombre: **assenti** — il design usa esclusivamente contrasto di colore tra livelli di grigio scuro
@@ -226,6 +252,9 @@ focus: border-color #b22222, outline none
 - [ ] Sfondo `#1a1a1a`, superfici `#242424`
 - [ ] Font serif per titoli hero, sans-serif per tutto il resto
 - [ ] Accento unico rosso `#b22222` — bottoni, link titoli, bordi attivi, badge
+- [ ] Colori semantici: success `#22c55e`, warning `#f59e0b`, error `#dc2626`, info `#63b3ed`
+- [ ] Scala font-size con variabili CSS `--fs-xs` … `--fs-3xl`
+- [ ] Border-radius scala: sm `3px`, default `4px`, lg `6px`, pill `999px`
 - [ ] Topnav fisso scuro con search + icone
 - [ ] Layout 3 colonne (sidebar sinistra, feed centrale, sidebar destra)
 - [ ] Card feed: avatar + username + azione + timestamp + contenuto

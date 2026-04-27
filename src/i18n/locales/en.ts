@@ -131,4 +131,9 @@ export const en = {
 
   // Exporter
   'exporter.shareTitle': 'Blurred photo',
+
+  // Update banner
+  'update.available': 'A new version is available.',
+  'update.reload': 'Reload',
+  'update.dismiss': 'Later',
 } as const

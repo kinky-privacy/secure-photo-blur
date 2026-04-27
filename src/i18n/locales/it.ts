@@ -131,4 +131,9 @@ export const it = {
 
   // Exporter
   'exporter.shareTitle': 'Foto anonimizzata',
+
+  // Update banner
+  'update.available': 'Una nuova versione è disponibile.',
+  'update.reload': 'Ricarica',
+  'update.dismiss': 'Dopo',
 } as const

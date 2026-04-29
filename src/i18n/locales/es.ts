@@ -11,9 +11,10 @@ export const es = {
   'landing.tagline.line2': 'Sin recopilación de datos personales.',
   'landing.tagline.line3': 'Metadatos eliminados.',
   'landing.tagline.line4': 'Totalmente sin conexión.',
-  'landing.nerdy.question': '¿Apasionados de la tecnología?',
-  'landing.nerdy.text': 'Detalles técnicos completos en el',
+  'landing.nerdy.text': 'Detalles técnicos para nerds en el',
   'landing.nerdy.linkText': 'repositorio open-source',
+  'landing.nerdy.dmPrefix': 'FetLife DMs a',
+  'landing.nerdy.or': 'o a',
 
   // Navbar
   'navbar.brand': 'Secure Photo',

@@ -11,9 +11,10 @@ export const pl = {
   'landing.tagline.line2': 'Żadne dane osobowe nie są zbierane.',
   'landing.tagline.line3': 'Metadane usunięte.',
   'landing.tagline.line4': 'Całkowicie offline.',
-  'landing.nerdy.question': 'Ciekawi szczegółów technicznych?',
-  'landing.nerdy.text': 'Długie techniczne szczegóły w',
+  'landing.nerdy.text': 'Nerdowe szczegóły techniczne w',
   'landing.nerdy.linkText': 'repozytorium open-source',
+  'landing.nerdy.dmPrefix': 'FetLife DMs do',
+  'landing.nerdy.or': 'lub na',
 
   // Navbar
   'navbar.brand': 'Secure Photo',

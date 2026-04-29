@@ -105,9 +105,12 @@ export function Landing({ onFilesSelected, loading, error }: Props) {
         {error && <p class="body-text body-text--accent landing-error">{error}</p>}
 
         <p class="body-text body-text--relaxed landing-nerdy-link">
-          {t('landing.nerdy.question')}<br />
           {t('landing.nerdy.text')}{' '}
-          <a class="landing-oss-link" href={REPO_URL} target="_blank" rel="noopener noreferrer">{t('landing.nerdy.linkText')}</a>.
+          <a class="landing-oss-link" href={REPO_URL} target="_blank" rel="noopener noreferrer">{t('landing.nerdy.linkText')}</a>.<br />
+          {t('landing.nerdy.dmPrefix')}{' '}
+          <a class="landing-oss-link" href="https://fetlife.com/presence_" target="_blank" rel="noopener noreferrer">@presence_</a>{' '}
+          {t('landing.nerdy.or')}{' '}
+          <a class="landing-oss-link" href="mailto:hello@securephotoblur.com">hello@securephotoblur.com</a>
         </p>
 
       </main>

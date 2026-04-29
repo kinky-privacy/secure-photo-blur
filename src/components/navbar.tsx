@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'preact/hooks'
-import { useTranslation, SUPPORTED_LOCALES } from '../i18n'
-import type { Locale } from '../i18n'
+import { useTranslation } from '../i18n'
+import { LanguageModal, LOCALE_FLAGS, LOCALE_LABELS } from './language-modal'
 
 interface NavbarProps {
   phase: 'grouping' | 'editing' | null
@@ -9,13 +9,12 @@ interface NavbarProps {
   onReset?: () => void
 }
 
-const LOCALE_LABELS: Record<Locale, string> = { en: 'EN', it: 'IT', de: 'DE', fr: 'FR', es: 'ES' }
-
 export function Navbar({ phase, isMulti, onPhaseChange, onReset }: NavbarProps) {
-  const { t, locale, setLocale } = useTranslation()
+  const { t, locale } = useTranslation()
   const showTabs = isMulti && phase !== null
   const canGoHome = phase !== null
   const [showConfirm, setShowConfirm] = useState(false)
+  const [showLangModal, setShowLangModal] = useState(false)
 
   useEffect(() => {
     if (!showConfirm) return
@@ -77,18 +76,9 @@ export function Navbar({ phase, isMulti, onPhaseChange, onReset }: NavbarProps) 
       </div>
 
       <div class="navbar-right">
-        <div class="navbar-locale-toggle">
-          {SUPPORTED_LOCALES.map(l => (
-            <button
-              key={l}
-              class={`navbar-locale-btn${locale === l ? ' navbar-locale-btn--active' : ''}`}
-              type="button"
-              onClick={() => setLocale(l)}
-            >
-              {LOCALE_LABELS[l]}
-            </button>
-          ))}
-        </div>
+        <button class="navbar-lang-btn" type="button" onClick={() => setShowLangModal(true)}>
+          {LOCALE_FLAGS[locale]} {LOCALE_LABELS[locale]}
+        </button>
         <button
           class="navbar-feedback-btn"
           data-tally-open="681pb5"
@@ -207,33 +197,21 @@ export function Navbar({ phase, isMulti, onPhaseChange, onReset }: NavbarProps) 
           background: #fff;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
         }
-        .navbar-locale-toggle {
-          display: flex;
+        .navbar-lang-btn {
+          background: transparent;
           border: 1px solid var(--border);
           border-radius: var(--radius);
-          overflow: hidden;
-          margin-right: var(--sp-sm);
-        }
-        .navbar-locale-btn {
-          background: transparent;
-          border: none;
           padding: var(--sp-xs) var(--sp-sm);
           font-size: var(--fs-sm);
           font-family: var(--font-sans);
           font-weight: 600;
-          color: var(--text-muted);
+          color: var(--text-primary);
           cursor: pointer;
+          margin-right: var(--sp-sm);
           transition: background var(--transition), color var(--transition);
         }
-        .navbar-locale-btn:hover {
-          color: var(--text-secondary);
-        }
-        .navbar-locale-btn--active {
+        .navbar-lang-btn:hover {
           background: var(--bg-elevated);
-          color: var(--text-primary);
-        }
-        .navbar-locale-btn + .navbar-locale-btn {
-          border-left: 1px solid var(--border);
         }
         .navbar--landing {
           display: none;
@@ -286,6 +264,8 @@ export function Navbar({ phase, isMulti, onPhaseChange, onReset }: NavbarProps) 
         `}</style>
       </div>
     )}
+
+    {showLangModal && <LanguageModal onClose={() => setShowLangModal(false)} />}
     </>
   )
 }

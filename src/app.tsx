@@ -3,6 +3,7 @@ import { Landing } from './components/landing'
 import { Editor } from './components/editor'
 import { GroupingView } from './components/grouping-view'
 import { Navbar } from './components/navbar'
+import { FloatingLandingButtons } from './components/floating-landing-buttons'
 import { loadImage } from './engine/image-loader'
 import { cleanupImageBitmap } from './engine/memory-cleanup'
 import { getGroupNumber, getRows } from './utils/groups'
@@ -244,12 +245,15 @@ export function App() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [queue.length, currentIndex])
 
-  // Ensure Tally wires up the feedback button after Preact renders it
+  // Ensure Tally wires up feedback buttons after Preact renders them
+  // Re-run when switching between landing (floating btn) and editor (navbar btn)
+  const currentItem = queue[currentIndex] ?? null
+  const currentImage = currentItem?.loaded ?? null
   useEffect(() => {
     if ((window as any).Tally) {
       (window as any).Tally.loadEmbeds()
     }
-  }, [])
+  }, [!!currentImage])
 
   const handleSaveEditState = useCallback((state: ImageEditState) => {
     setQueue(prev => {
@@ -344,8 +348,6 @@ export function App() {
     setQueue(newQueue)
   }
 
-  const currentItem = queue[currentIndex] ?? null
-  const currentImage = currentItem?.loaded ?? null
   const isMulti = queue.length > 1
 
   return (
@@ -385,11 +387,14 @@ export function App() {
           />
         )
       ) : (
-        <Landing
-          onFilesSelected={handleFilesSelected}
-          loading={loading}
-          error={error}
-        />
+        <>
+          <FloatingLandingButtons />
+          <Landing
+            onFilesSelected={handleFilesSelected}
+            loading={loading}
+            error={error}
+          />
+        </>
       )}
     </>
   )

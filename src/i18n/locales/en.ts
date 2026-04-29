@@ -136,4 +136,6 @@ export const en = {
   'update.available': 'A new version is available.',
   'update.reload': 'Reload',
   'update.dismiss': 'Later',
+  // Language modal
+  'languageModal.title': 'Language',
 } as const

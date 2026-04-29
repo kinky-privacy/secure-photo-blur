@@ -29,7 +29,7 @@ The whole thing is a static web page with no backend — you can switch to airpl
 - **Irreversible blur** — Adaptive mosaic reduces faces to ~5×5 effective pixels (min block 12px; below 8px is reversible via super-resolution). Solid fill sets every pixel to R=G=B=0. Gaussian blur is rated LOW: reversible per Revelio (arXiv:2506.12344) and Fantômas (PoPETs 2024).
 - **Network isolation** — Content-Security-Policy blocks all external connections except anonymous page-view analytics (Cloudflare Web Analytics — no cookies, no personal data, no tracking pixels). Your photos never leave your device.
 - **Metadata stripping** — Canvas re-rendering inherently strips all EXIF/GPS data. No metadata survives export.
-- **Open source** — [source code on GitHub](https://github.com/secure-photo-blur/secure-photo-blur) for everyone to audit.
+- **Open source** — [source code on GitHub](https://github.com/kinky-privacy/secure-photo-blur) for everyone to audit.
 
 ## Languages
 

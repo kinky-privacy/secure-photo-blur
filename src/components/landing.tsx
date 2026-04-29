@@ -2,7 +2,7 @@ import { useRef, useState } from 'preact/hooks'
 import { MosaicBackdrop } from './mosaic-backdrop'
 import { useTranslation } from '../i18n'
 
-const REPO_URL = 'https://github.com/secure-photo-blur/secure-photo-blur'
+const REPO_URL = 'https://github.com/kinky-privacy/secure-photo-blur'
 
 interface Props {
   onFilesSelected: (files: File[]) => void

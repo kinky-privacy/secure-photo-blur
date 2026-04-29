@@ -143,6 +143,4 @@ export const pl = {
   'update.available': 'Dostępna jest nowa wersja.',
   'update.reload': 'Odśwież',
   'update.dismiss': 'Później',
-  // Language modal
-  'languageModal.title': 'Język',
 } as const

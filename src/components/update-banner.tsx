@@ -18,72 +18,39 @@ export function UpdateBanner() {
   })
 
   const show = needRefresh[0]
-  const dismiss = needRefresh[1] as (v: boolean) => void
 
   if (!show) return null
 
   return (
-    <div class="update-banner" role="alert">
-      <span class="update-banner-text">{t('update.available')}</span>
-      <div class="update-banner-actions">
-        <button
-          class="btn-ghost update-banner-btn"
-          onClick={() => dismiss(false)}
-        >
-          {t('update.dismiss')}
-        </button>
-        <button
-          class="btn-primary update-banner-btn"
-          onClick={() => updateServiceWorker()}
-        >
-          {t('update.reload')}
-        </button>
+    <div class="overlay" onClick={() => updateServiceWorker()}>
+      <div class="dialog update-dialog" onClick={(e) => e.stopPropagation()}>
+        <p class="update-text">{t('update.available')}</p>
+        <div class="update-actions">
+          <button
+            class="btn-primary update-btn"
+            onClick={() => updateServiceWorker()}
+          >
+            {t('update.reload')}
+          </button>
+        </div>
       </div>
 
       <style>{`
-        .update-banner {
-          position: fixed;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          z-index: 900;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: var(--sp-md);
-          padding: var(--sp-sm) var(--sp-md);
-          background: var(--bg-surface);
-          border-top: 1px solid var(--border);
-          font-family: var(--font-sans);
-          animation: update-slide-up 0.3s ease;
+        .update-dialog {
+          max-width: 320px;
+          text-align: center;
         }
-        .update-banner-text {
+        .update-text {
+          font-size: var(--fs-lg);
           color: var(--text-primary);
-          font-size: var(--fs-md);
+          margin: 0 0 var(--sp-lg);
         }
-        .update-banner-actions {
+        .update-actions {
           display: flex;
-          gap: var(--sp-xs);
+          justify-content: center;
         }
-        .update-banner-btn {
-          padding: var(--sp-xs) var(--sp-sm);
-          font-size: var(--fs-sm);
-        }
-        @keyframes update-slide-up {
-          from { transform: translateY(100%); }
-          to   { transform: translateY(0); }
-        }
-        @media (max-width: 480px) {
-          .update-banner {
-            flex-direction: column;
-            gap: var(--sp-sm);
-          }
-          .update-banner-actions {
-            width: 100%;
-          }
-          .update-banner-btn {
-            flex: 1;
-          }
+        .update-btn {
+          min-width: 140px;
         }
       `}</style>
     </div>

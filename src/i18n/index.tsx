@@ -6,14 +6,15 @@ import { it } from './locales/it'
 import { de } from './locales/de'
 import { fr } from './locales/fr'
 import { es } from './locales/es'
+import { pl } from './locales/pl'
 
 export type TranslationKey = keyof typeof en
-export type Locale = 'en' | 'it' | 'de' | 'fr' | 'es'
+export type Locale = 'en' | 'it' | 'de' | 'fr' | 'es' | 'pl'
 
-const SUPPORTED_LOCALES: Locale[] = ['en', 'it', 'de', 'fr', 'es']
+const SUPPORTED_LOCALES: Locale[] = ['en', 'it', 'de', 'fr', 'es', 'pl']
 const LS_LOCALE_KEY = 'photoblur-locale'
 
-const dictionaries: Record<Locale, Record<string, string>> = { en, it, de, fr, es }
+const dictionaries: Record<Locale, Record<string, string>> = { en, it, de, fr, es, pl }
 
 function detectLocale(): Locale {
   try {

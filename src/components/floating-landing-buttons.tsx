@@ -1,10 +1,12 @@
 import { useState } from 'preact/hooks'
 import { useTranslation } from '../i18n'
 import { LanguageModal, LOCALE_FLAGS, LOCALE_LABELS } from './language-modal'
+import { FeedbackModal } from './feedback-modal'
 
 export function FloatingLandingButtons() {
   const { t, locale } = useTranslation()
   const [showLangModal, setShowLangModal] = useState(false)
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
 
   return (
     <>
@@ -14,17 +16,15 @@ export function FloatingLandingButtons() {
         </button>
         <button
           class="floating-btn"
-          data-tally-open="681pb5"
-          data-tally-emoji-text="👋"
-          data-tally-emoji-animation="wave"
-          data-tally-auto-close="3000"
           aria-label={t('navbar.feedback.aria')}
           type="button"
+          onClick={() => setShowFeedbackModal(true)}
         >
           {t('navbar.feedback')}
         </button>
       </div>
       {showLangModal && <LanguageModal onClose={() => setShowLangModal(false)} />}
+      {showFeedbackModal && <FeedbackModal onClose={() => setShowFeedbackModal(false)} />}
 
       <style>{`
         .floating-landing-btns {

@@ -8,6 +8,7 @@ export const LOCALE_FLAGS: Record<Locale, string> = {
   de: '🇩🇪',
   fr: '🇫🇷',
   es: '🇪🇸',
+  pl: '🇵🇱',
 }
 
 export const LOCALE_LABELS: Record<Locale, string> = {
@@ -16,6 +17,7 @@ export const LOCALE_LABELS: Record<Locale, string> = {
   de: 'DE',
   fr: 'FR',
   es: 'ES',
+  pl: 'PL',
 }
 
 const LOCALE_NAMES: Record<Locale, string> = {
@@ -24,6 +26,7 @@ const LOCALE_NAMES: Record<Locale, string> = {
   de: 'Deutsch',
   fr: 'Français',
   es: 'Español',
+  pl: 'Polski',
 }
 
 interface Props {

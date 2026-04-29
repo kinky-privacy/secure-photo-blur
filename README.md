@@ -1,5 +1,7 @@
 # Secure Photo Blur
 
+![Secure Photo Blur](public/socialpreview@2.png)
+
 **[Try it live](https://securephotoblur.com/)**
 
 Privacy-first photo anonymization — offline, open-source, no personal data collected.

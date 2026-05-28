@@ -51,17 +51,6 @@ export function FeedbackModal({ onClose }: Props) {
               <span class="feedback-contact-value">hello@securephotoblur.com</span>
             </div>
           </a>
-          <a class="body-text feedback-contact" href="https://fetlife.com/presence_" target="_blank" rel="noopener noreferrer">
-            <div class="feedback-contact-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-              </svg>
-            </div>
-            <div class="feedback-contact-text">
-              <span class="feedback-contact-label">{t('feedbackModal.fetlife')}</span>
-              <span class="feedback-contact-value">@presence_</span>
-            </div>
-          </a>
         </div>
       </div>
 

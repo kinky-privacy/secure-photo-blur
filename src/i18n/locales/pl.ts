@@ -13,8 +13,7 @@ export const pl = {
   'landing.tagline.line4': 'Całkowicie offline.',
   'landing.nerdy.text': 'Nerdowe szczegóły techniczne w',
   'landing.nerdy.linkText': 'repozytorium open-source',
-  'landing.nerdy.dmPrefix': 'FetLife DMs do',
-  'landing.nerdy.or': 'lub na',
+  'landing.nerdy.dmPrefix': 'Napisz do mnie na',
 
   // Navbar
   'navbar.brand': 'Secure Photo',
@@ -26,7 +25,6 @@ export const pl = {
   'feedbackModal.title': 'Skontaktuj się',
   'feedbackModal.or': 'lub napisz do mnie bezpośrednio',
   'feedbackModal.email': 'E-mail',
-  'feedbackModal.fetlife': 'DM na FetLife',
   'feedbackModal.anonymous': 'Anonimowa opinia',
   'feedbackModal.anonymousDesc': 'Tally form',
   'navbar.confirm.title': 'Wrócić na początek?',

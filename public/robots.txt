@@ -1,4 +1,51 @@
+# Secure Photo Blur — robots.txt
+# Policy: allow AI search + user-triggered crawlers (they surface citations),
+# opt out of AI training crawlers. This is a request, not enforcement.
+
+# --- OpenAI ---
+User-agent: GPTBot
+Disallow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+
+# --- Anthropic ---
+User-agent: ClaudeBot
+Disallow: /
+User-agent: Claude-SearchBot
+Allow: /
+User-agent: Claude-User
+Allow: /
+
+# --- Perplexity ---
+User-agent: PerplexityBot
+Allow: /
+User-agent: Perplexity-User
+Allow: /
+
+# --- Google / Apple AI training (independent of Googlebot/Applebot indexing) ---
+User-agent: Google-Extended
+Disallow: /
+User-agent: Applebot-Extended
+Disallow: /
+
+# --- Other training / bulk crawlers ---
+User-agent: CCBot
+Disallow: /
+User-agent: Meta-ExternalAgent
+Disallow: /
+User-agent: Bytespider
+Disallow: /
+User-agent: Amazonbot
+Disallow: /
+
+# --- Everyone else (search engines, etc.) ---
+# Content Signals Policy (Cloudflare, 2025): declares how content may be used
+# after access — search index, AI grounding/answers (ai-input), AI training.
+# Policy: allow search indexing and AI answers/citations, opt out of training.
 User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
 
 Sitemap: https://securephotoblur.com/sitemap.xml

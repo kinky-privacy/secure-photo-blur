@@ -1,6 +1,10 @@
 /*
   X-Robots-Tag: index, follow
 
+/llms.txt
+  X-Robots-Tag: noindex
+  Content-Type: text/plain; charset=utf-8
+
 /og-image.png
   Cache-Control: public, max-age=604800
 

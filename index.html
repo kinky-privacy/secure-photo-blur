@@ -55,7 +55,7 @@
         "Automatic on-device face detection (BlazeFace, GPU-accelerated)",
         "Irreversible mosaic, solid black and solid average-color blur",
         "Automatic EXIF and GPS metadata stripping on export",
-        "Fully offline PWA — no uploads, no backend, no tracking",
+        "Fully offline PWA: no uploads, no cookies, no tracking of individuals (only anonymous daily counts)",
         "Supports JPEG, PNG, WebP and HEIC/HEIF"
       ],
       "citation": [
@@ -118,7 +118,7 @@
           "name": "Are my photos uploaded to a server?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. Everything runs locally in your browser — there is no backend and no uploads. After the first load the app works fully offline (PWA); you can switch to airplane mode and it still works."
+            "text": "No. Everything runs locally in your browser and nothing is uploaded: the server only keeps anonymous daily counts, with no IPs or cookies. After the first load the app works fully offline (PWA); you can switch to airplane mode and it still works."
           }
         },
         {
@@ -197,7 +197,7 @@
         <p>Secure Photo Blur is a free, open-source web app that blurs faces and sensitive areas in your photos before you share them publicly. Automatic face detection finds faces for you; you can adjust, add or remove regions manually, then export an anonymized copy. <a href="https://securephotoblur.com/">Open the app →</a></p>
 
         <h2>How it works</h2>
-        <p>The whole tool is a static web page with no backend — your photos never leave your device. It runs fully offline after the first load (PWA): you can switch to airplane mode and it still works, or open DevTools → Network and confirm that nothing is ever uploaded. There is no account, no cookies and no tracking pixels — only anonymous, cookie-less page-view analytics via Cloudflare Web Analytics. A strict Content Security Policy blocks all external connections, the referrer is suppressed, and camera, microphone and geolocation permissions are explicitly disabled. Face detection runs locally via BlazeFace (the <a href="https://github.com/vladmandic/human">@vladmandic/human</a> library), GPU-accelerated through WebGL, with model weights bundled and no external requests at runtime.</p>
+        <p>The whole tool is a static web page and your photos never leave your device: the server only keeps anonymous daily counts, with no IPs or cookies. It runs fully offline after the first load (PWA): you can switch to airplane mode and it still works, or open DevTools → Network and confirm that nothing is ever uploaded. There is no account, no cookies and no tracking pixels — only anonymous, cookie-less page-view analytics via Cloudflare Web Analytics. A strict Content Security Policy blocks all external connections, the referrer is suppressed, and camera, microphone and geolocation permissions are explicitly disabled. Face detection runs locally via BlazeFace (the <a href="https://github.com/vladmandic/human">@vladmandic/human</a> library), GPU-accelerated through WebGL, with model weights bundled and no external requests at runtime.</p>
 
         <h2>Blur methods and their security</h2>
         <table>
@@ -228,7 +228,7 @@
         <h2>Frequently asked questions</h2>
         <details>
           <summary>Are my photos uploaded to a server?</summary>
-          <p>No. Everything runs locally in your browser — there is no backend and no uploads. After the first load the app works fully offline (PWA); you can switch to airplane mode and it still works.</p>
+          <p>No. Everything runs locally in your browser and nothing is uploaded: the server only keeps anonymous daily counts, with no IPs or cookies. After the first load the app works fully offline (PWA); you can switch to airplane mode and it still works.</p>
         </details>
         <details>
           <summary>Which blur method is safe against AI reversal?</summary>

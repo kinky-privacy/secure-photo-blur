@@ -12,7 +12,7 @@ Blur faces and sensitive areas in photos before sharing them publicly. Automatic
 
 ## How it works
 
-The whole thing is a static web page with no backend — you can switch to airplane mode and it still works (PWA, fully offline after first load), or open DevTools → Network on desktop and see for yourself that no photos are ever uploaded. There's no personal data collection, no auth; anonymous page-view analytics via Cloudflare Web Analytics (no cookies, no fingerprinting). Strict Content Security Policy, Referrer-Policy: no-referrer, and camera/mic/geolocation permissions are explicitly disabled. The code is open source and auditable — around 2,000 lines of Preact + TypeScript under a PolyForm Noncommercial 1.0 license — with face detection running locally through [@vladmandic/human](https://github.com/vladmandic/human) (BlazeFace), model weights bundled, no external requests at runtime.
+The whole thing is a static web page: the only server-side code is a tiny counter that keeps anonymous daily totals (first visits, opened photos, feedback answers) without storing IPs, user agents or cookies. You can switch to airplane mode and it still works (PWA, fully offline after first load), or open DevTools → Network on desktop and see for yourself that no photos are ever uploaded. There's no personal data collection, no auth; anonymous page-view analytics via Cloudflare Web Analytics (no cookies, no fingerprinting). Strict Content Security Policy, Referrer-Policy: no-referrer, and camera/mic/geolocation permissions are explicitly disabled. The code is open source and auditable — around 2,000 lines of Preact + TypeScript under a PolyForm Noncommercial 1.0 license — with face detection running locally through [@vladmandic/human](https://github.com/vladmandic/human) (BlazeFace), model weights bundled, no external requests at runtime.
 
 ## Blur methods
 
@@ -27,7 +27,7 @@ The whole thing is a static web page with no backend — you can switch to airpl
 
 - **Face detection** — automatically pre-selects faces as useful starting regions; you can adjust, add, or remove any area before exporting. BlazeFace model via @vladmandic/human, GPU-accelerated (WebGL), self-hosted — no external CDN, no network calls.
 - **Irreversible blur** — Adaptive mosaic reduces faces to ~5×5 effective pixels (min block 12px; below 8px is reversible via super-resolution). Solid fill sets every pixel to R=G=B=0. Gaussian blur is rated LOW: reversible per Revelio (arXiv:2506.12344) and Fantômas (PoPETs 2024).
-- **Network isolation** — Content-Security-Policy blocks all external connections except anonymous page-view analytics (Cloudflare Web Analytics — no cookies, no personal data, no tracking pixels). Your photos never leave your device.
+- **Network isolation** — Content-Security-Policy blocks all external connections except anonymous page-view analytics (Cloudflare Web Analytics — no cookies, no personal data, no tracking pixels). Your photos never leave your device. After the last export the app may ask how it went (at most once a week): what you tap ("all good", "suggestion" or close) is sent to the site itself as a single anonymous word, nothing else.
 - **Metadata stripping** — Canvas re-rendering inherently strips all EXIF/GPS data. No metadata survives export.
 - **Open source** — [source code on GitHub](https://github.com/kinky-privacy/secure-photo-blur) for everyone to audit.
 

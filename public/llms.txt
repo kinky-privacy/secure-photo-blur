@@ -1,6 +1,6 @@
 # Secure Photo Blur
 
-> Privacy-first, open-source web app to blur faces and sensitive areas in photos before sharing. Runs fully offline in the browser — no uploads, no backend, no tracking — and strips EXIF/GPS metadata on export.
+> Privacy-first, open-source web app to blur faces and sensitive areas in photos before sharing. Runs fully offline in the browser (no uploads, no cookies, only anonymous daily counts) and strips EXIF/GPS metadata on export.
 
 Secure Photo Blur is a static, offline-first PWA (Preact + TypeScript) for irreversible photo anonymization. Blur methods: mosaic (~5×5 effective pixels), solid black and solid average color are irreversible; Gaussian blur is reversible by AI (per Revelio, arXiv:2506.12344, and Fantômas, PoPETs 2024) and is flagged as low-security. Face detection runs locally via BlazeFace (@vladmandic/human). Supports JPEG, PNG, WebP and HEIC/HEIF in six languages (English, Italian, German, French, Spanish, Polish).
 

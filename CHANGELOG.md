@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0 · 2026-09-25
+
+- Added a short feedback dialog after the last export, shown at most once a week; the choice (including closing it) is sent anonymously as a single word
+- Added anonymous server-side counters: daily totals of first visits and opened photos, with no IPs, user agents or cookies
+
 ## 1.1.5 — 2026-04-29
 
 - Replaced PWA update banner with modal dialog

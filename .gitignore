@@ -4,6 +4,7 @@ dist-ssr
 *.local
 .DS_Store
 dev-dist
+.wrangler
 push.sh
 
 .playwright-mcp

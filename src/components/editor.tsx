@@ -6,6 +6,7 @@ import { FaceList } from './face-list'
 import { RegionEditModal } from './region-edit-modal'
 import { SecurityBadge } from './security-badge'
 import { SecurityInfoDialog } from './security-info-dialog'
+import { FeedbackPrompt, shouldAskFeedback } from './feedback-prompt'
 import { useCanvasTransform } from '../hooks/use-canvas-transform'
 import { usePointerDraw } from '../hooks/use-pointer-draw'
 import { exportImage } from '../engine/exporter'
@@ -46,6 +47,7 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
   const [showInfo, setShowInfo] = useState(false)
   const exportFormat: ExportFormat = 'png'
   const [exporting, setExporting] = useState(false)
+  const [showFeedbackPrompt, setShowFeedbackPrompt] = useState(false)
   const [editingRegion, setEditingRegion] = useState<{ kind: 'face' | 'rect'; index: number } | null>(null)
   const regionSnapshotRef = useRef<{ rect: Rect; angle: number; visible: boolean; shape: RegionShape } | null>(null)
   const [detecting, setDetecting] = useState(false)
@@ -266,10 +268,17 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
     setEditingRegion(null)
   }
 
+  // Once the whole job is exported (only or last photo), ask for a quick opinion
+  function askFeedbackIfDone() {
+    const isLastImage = !queuePosition || queuePosition.current >= queuePosition.total
+    if (isLastImage && shouldAskFeedback()) setShowFeedbackPrompt(true)
+  }
+
   async function handleExportDownload() {
     setExporting(true)
     try {
       await exportImage(image, allActions, exportFormat, groupNumber, t('exporter.shareTitle'))
+      askFeedbackIfDone()
     } catch (e) {
       alert(t('editor.exportFailed', { error: e instanceof Error ? e.message : String(e) }))
     } finally {
@@ -282,6 +291,7 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
     try {
       await exportImage(image, allActions, exportFormat, groupNumber, t('exporter.shareTitle'))
       onExportDone?.()
+      askFeedbackIfDone()
     } catch (e) {
       alert(t('editor.exportFailed', { error: e instanceof Error ? e.message : String(e) }))
     } finally {
@@ -517,6 +527,8 @@ export function Editor({ image, onReset: _onReset, onNewImage, initialEditState,
       })()}
 
       {showInfo && <SecurityInfoDialog onClose={() => setShowInfo(false)} />}
+
+      {showFeedbackPrompt && <FeedbackPrompt onClose={() => setShowFeedbackPrompt(false)} />}
 
       <style>{`
         .editor-card-wrapper {

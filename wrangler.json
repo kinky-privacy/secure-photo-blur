@@ -1,7 +1,22 @@
 {
   "name": "secure-photo-blur",
   "compatibility_date": "2025-04-22",
+  "main": "worker/index.ts",
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": {
+    "enabled": false
+  },
   "assets": {
-    "directory": "./dist"
-  }
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/", "/models/*.bin", "/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "spb-stats",
+      "database_id": "1adafe18-e7de-4dab-be63-d1d8176c6549"
+    }
+  ]
 }
